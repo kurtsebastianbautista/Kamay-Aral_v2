@@ -1,0 +1,151 @@
+import { createClient } from '@/lib/supabase/server'
+import { notFound } from 'next/navigation'
+import { MODULES } from '@/content/registry'
+import Link from 'next/link'
+import { ChevronLeft, CheckCircle2 } from 'lucide-react'
+import ResetAttemptButton from '@/components/teacher/ResetAttemptButton'
+
+interface Props { params: Promise<{ sectionId: string; studentId: string }> }
+
+export default async function StudentDetailPage({ params }: Props) {
+  const { sectionId, studentId } = await params
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const { data: section } = await supabase
+    .from('sections')
+    .select('id, name, teacher_id')
+    .eq('id', sectionId)
+    .single()
+  if (!section || section.teacher_id !== user!.id) notFound()
+
+  const { data: student } = await supabase
+    .from('students')
+    .select('id, full_name')
+    .eq('id', studentId)
+    .eq('section_id', sectionId)
+    .single()
+  if (!student) notFound()
+
+  const { data: learnProgress } = await supabase
+    .from('learn_progress')
+    .select('module_id, submodule_id, item_id')
+    .eq('student_id', studentId)
+
+  const { data: attempts } = await supabase
+    .from('quiz_attempts')
+    .select('id, submodule_id, score, total, submitted_at')
+    .eq('student_id', studentId)
+
+  const attemptIds = attempts?.map((a) => a.id) ?? []
+  const { data: answers } = attemptIds.length > 0
+    ? await supabase
+        .from('quiz_answers')
+        .select('attempt_id, item_id, is_correct')
+        .in('attempt_id', attemptIds)
+    : { data: [] }
+
+  function learnedCount(moduleId: string, submoduleId: string, totalItems: number) {
+    const viewed = learnProgress?.filter(
+      (p) => p.module_id === moduleId && p.submodule_id === submoduleId
+    ).length ?? 0
+    return `${viewed}/${totalItems}`
+  }
+
+  function getAttempt(submoduleId: string) {
+    return attempts?.find((a) => a.submodule_id === submoduleId)
+  }
+
+  function getItemAnalysis(attemptId: string) {
+    return answers?.filter((a) => a.attempt_id === attemptId) ?? []
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <Link
+          href={`/teacher/sections/${sectionId}`}
+          className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-2"
+        >
+          <ChevronLeft className="h-4 w-4" /> {section.name}
+        </Link>
+        <h1 className="text-2xl font-bold">{student.full_name}</h1>
+      </div>
+
+      {MODULES.map((mod) => {
+        if (mod.subModules.length === 0) return null
+        return (
+          <div key={mod.id}>
+            <h2 className="font-semibold flex items-center gap-2 mb-3">
+              <span>{mod.icon}</span> {mod.title}
+            </h2>
+            <div className="space-y-3">
+              {mod.subModules.map((sm) => {
+                const attempt = getAttempt(sm.id)
+                const submitted = !!attempt?.submitted_at
+                const itemAnswers = attempt ? getItemAnalysis(attempt.id) : []
+                const percent = attempt?.total
+                  ? Math.round((attempt.score ?? 0) / attempt.total * 100)
+                  : null
+
+                return (
+                  <div key={sm.id} className="rounded-xl border bg-white p-4 shadow-sm space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">{sm.title}</p>
+                        <p className="text-xs text-muted-foreground">
+                          Learn: {learnedCount(mod.id, sm.id, sm.items.length)} items viewed
+                        </p>
+                      </div>
+                      {submitted && percent !== null && (
+                        <div className="flex items-center gap-2">
+                          <span className={`text-sm font-bold ${
+                            percent >= 80 ? 'text-emerald-600' : percent >= 50 ? 'text-amber-600' : 'text-red-600'
+                          }`}>
+                            {attempt.score}/{attempt.total} ({percent}%)
+                          </span>
+                          <ResetAttemptButton attemptId={attempt.id} />
+                        </div>
+                      )}
+                      {attempt && !submitted && (
+                        <span className="text-xs text-amber-600 font-medium">In progress</span>
+                      )}
+                    </div>
+
+                    {submitted && itemAnswers.length > 0 && (
+                      <div>
+                        <p className="text-xs font-semibold text-muted-foreground mb-2">Item Analysis</p>
+                        <div className="grid grid-cols-4 gap-1.5 sm:grid-cols-6">
+                          {sm.items.map((item) => {
+                            const results = itemAnswers.filter((a) => a.item_id === item.id)
+                            const allCorrect = results.length > 0 && results.every((a) => a.is_correct)
+                            const anyWrong = results.some((a) => !a.is_correct)
+                            return (
+                              <div
+                                key={item.id}
+                                title={`${item.label}: ${results.filter((a) => a.is_correct).length}/${results.length} correct`}
+                                className={`flex items-center justify-center gap-0.5 rounded-lg px-1 py-2 text-xs font-bold ${
+                                  allCorrect ? 'bg-emerald-100 text-emerald-700' :
+                                  anyWrong ? 'bg-red-100 text-red-700' :
+                                  'bg-muted text-muted-foreground'
+                                }`}
+                              >
+                                {item.label}
+                                {allCorrect && <CheckCircle2 className="h-3 w-3" />}
+                                {anyWrong && <span>✗</span>}
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
