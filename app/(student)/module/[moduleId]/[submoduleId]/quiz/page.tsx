@@ -23,7 +23,7 @@ export default async function QuizPage({ params }: Props) {
     .eq('id', user.id)
     .single()
 
-  if (!student) redirect('/dashboard')
+  if (!student || !student.section_id) redirect('/dashboard')
 
   // Check quiz enabled
   const { data: setting } = await supabase

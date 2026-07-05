@@ -28,13 +28,23 @@ export async function updateSession(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
+  function destinationFor(role: string | undefined) {
+    if (role === 'admin') return '/admin/overview'
+    if (role === 'teacher') return '/teacher/dashboard'
+    return '/dashboard'
+  }
+
+  // /setup-password relies on the temporary session created by an invite/recovery
+  // link, so it must stay accessible whether or not `user` is set — never bounce.
+  if (pathname === '/setup-password') {
+    return supabaseResponse
+  }
+
   // Routes that don't require auth
-  const publicRoutes = ['/login', '/register']
+  const publicRoutes = ['/login', '/forgot-password']
   if (publicRoutes.includes(pathname)) {
     if (user) {
-      const isTeacher = user.user_metadata?.role === 'teacher'
-      const dest = isTeacher ? '/teacher/dashboard' : '/dashboard'
-      return NextResponse.redirect(new URL(dest, request.url))
+      return NextResponse.redirect(new URL(destinationFor(user.user_metadata?.role), request.url))
     }
     return supabaseResponse
   }
@@ -47,7 +57,14 @@ export async function updateSession(request: NextRequest) {
   // Only teachers can access /teacher routes
   if (pathname.startsWith('/teacher')) {
     if (user.user_metadata?.role !== 'teacher') {
-      return NextResponse.redirect(new URL('/dashboard', request.url))
+      return NextResponse.redirect(new URL(destinationFor(user.user_metadata?.role), request.url))
+    }
+  }
+
+  // Only admin can access /admin routes
+  if (pathname.startsWith('/admin')) {
+    if (user.user_metadata?.role !== 'admin') {
+      return NextResponse.redirect(new URL(destinationFor(user.user_metadata?.role), request.url))
     }
   }
 

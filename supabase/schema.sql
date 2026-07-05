@@ -7,6 +7,16 @@
 create extension if not exists "pgcrypto";
 
 -- ============================================================
+-- is_admin() helper — reads role from the JWT, no table access.
+-- ============================================================
+create or replace function public.is_admin()
+returns boolean
+language sql stable
+as $$
+  select coalesce((auth.jwt() -> 'user_metadata' ->> 'role') = 'admin', false);
+$$;
+
+-- ============================================================
 -- TEACHERS
 -- Uses Supabase Auth (auth.users) for credentials.
 -- One auth.user = one teacher profile.
@@ -14,6 +24,8 @@ create extension if not exists "pgcrypto";
 create table public.teachers (
   id uuid primary key references auth.users(id) on delete cascade,
   full_name text not null,
+  first_name text,
+  last_name text,
   created_at timestamptz not null default now()
 );
 alter table public.teachers enable row level security;
@@ -21,6 +33,10 @@ alter table public.teachers enable row level security;
 -- Teachers can only read/update their own profile
 create policy "Teachers: own profile" on public.teachers
   for all using (auth.uid() = id);
+
+-- Admin: full access
+create policy "Admin: full access teachers" on public.teachers
+  for all using (public.is_admin());
 
 -- ============================================================
 -- SECTIONS
@@ -37,14 +53,24 @@ alter table public.sections enable row level security;
 create policy "Sections: teacher owns" on public.sections
   for all using (teacher_id = auth.uid());
 
+-- Admin: full access (can create sections for any teacher)
+create policy "Admin: full access sections" on public.sections
+  for all using (public.is_admin());
+
 -- ============================================================
 -- STUDENTS
--- Accounts created by teachers. Auth also via auth.users.
+-- Accounts created by teachers or admin. Auth also via auth.users.
+-- section_id is nullable: NULL means the student is unassigned
+-- (removed from a section, or created without one by admin).
 -- ============================================================
 create table public.students (
   id uuid primary key references auth.users(id) on delete cascade,
-  section_id uuid not null references public.sections(id) on delete cascade,
+  section_id uuid references public.sections(id) on delete set null,
   full_name text not null,
+  first_name text,
+  last_name text,
+  username text unique,
+  email text,
   created_at timestamptz not null default now()
 );
 alter table public.students enable row level security;
@@ -54,12 +80,51 @@ create policy "Students: own row" on public.students
   for select using (auth.uid() = id);
 
 -- Teachers read/write students in their sections
+-- USING governs which existing rows a teacher can touch (must currently be
+-- in one of their own sections). WITH CHECK governs what the row is allowed
+-- to become afterward — either still one of their own sections, or NULL
+-- (unassigned), since "remove student from section" sets section_id to NULL
+-- and would otherwise fail the same condition it's using to become valid.
 create policy "Teachers: manage students" on public.students
   for all using (
     section_id in (
       select id from public.sections where teacher_id = auth.uid()
     )
+  )
+  with check (
+    section_id is null
+    or section_id in (
+      select id from public.sections where teacher_id = auth.uid()
+    )
   );
+
+-- Teachers can view unassigned students (to add them to a section)
+create policy "Teachers: view unassigned students" on public.students
+  for select using (
+    section_id is null
+    and exists (select 1 from public.teachers t where t.id = auth.uid())
+  );
+
+-- Teachers can claim an unassigned student into one of their own sections.
+-- Separate from "Teachers: manage students" because that policy's USING
+-- clause only matches rows already in one of the teacher's sections — an
+-- unassigned (section_id is null) row never matches it, so without this,
+-- the UPDATE in addExistingStudentToSectionAction silently affects zero
+-- rows under RLS instead of erroring, making it look like it "succeeded".
+create policy "Teachers: claim unassigned students" on public.students
+  for update using (
+    section_id is null
+    and exists (select 1 from public.teachers t where t.id = auth.uid())
+  )
+  with check (
+    section_id in (
+      select id from public.sections where teacher_id = auth.uid()
+    )
+  );
+
+-- Admin: full access
+create policy "Admin: full access students" on public.students
+  for all using (public.is_admin());
 
 -- ============================================================
 -- LEARN PROGRESS
@@ -87,6 +152,10 @@ create policy "LearnProgress: teacher view" on public.learn_progress
       where sec.teacher_id = auth.uid()
     )
   );
+
+-- Admin: full access
+create policy "Admin: full access learn_progress" on public.learn_progress
+  for all using (public.is_admin());
 
 -- ============================================================
 -- QUIZ SETTINGS
@@ -116,6 +185,10 @@ create policy "QuizSettings: student reads" on public.quiz_settings
       select section_id from public.students where id = auth.uid()
     )
   );
+
+-- Admin: full access
+create policy "Admin: full access quiz_settings" on public.quiz_settings
+  for all using (public.is_admin());
 
 -- ============================================================
 -- QUIZ ATTEMPTS
@@ -155,6 +228,10 @@ create policy "QuizAttempts: teacher reset" on public.quiz_attempts
     )
   );
 
+-- Admin: full access
+create policy "Admin: full access quiz_attempts" on public.quiz_attempts
+  for all using (public.is_admin());
+
 -- ============================================================
 -- QUIZ ANSWERS
 -- Per-question results within an attempt.
@@ -186,6 +263,10 @@ create policy "QuizAnswers: teacher view" on public.quiz_answers
     )
   );
 
+-- Admin: full access
+create policy "Admin: full access quiz_answers" on public.quiz_answers
+  for all using (public.is_admin());
+
 -- ============================================================
 -- USER ROLES VIEW
 -- Helper to determine if an auth.user is a teacher or student.
@@ -197,9 +278,10 @@ create or replace view public.user_roles as
 
 -- ============================================================
 -- TEACHER AUTO-INSERT TRIGGER
--- When a new auth user signs up with role='teacher' in their
--- user_metadata, automatically insert into public.teachers.
--- This fires on supabase.auth.signUp() from the register page.
+-- Legacy safety net: if any auth user is ever created with
+-- role='teacher' in user_metadata via supabase.auth.signUp()
+-- (not used by the current app — teachers are admin-invited),
+-- auto-insert a row into public.teachers.
 -- ============================================================
 create or replace function public.handle_teacher_signup()
 returns trigger
@@ -226,14 +308,17 @@ create or replace trigger on_auth_user_created
 -- ============================================================
 -- GRANTS
 -- Required because tables created via SQL editor are not
--- automatically accessible to the `authenticated` role.
+-- automatically accessible to the `authenticated`, `anon`, or
+-- `service_role` roles. `service_role` needs these too — it's
+-- what the admin server actions (app/actions/admin.ts) use, and
+-- while it bypasses RLS, it still needs the base table grant.
 -- ============================================================
-grant usage on schema public to authenticated, anon;
-grant select, insert, update, delete on public.teachers to authenticated;
-grant select, insert, update, delete on public.sections to authenticated;
-grant select, insert, update, delete on public.students to authenticated;
-grant select, insert, update, delete on public.learn_progress to authenticated;
-grant select, insert, update, delete on public.quiz_settings to authenticated;
-grant select, insert, update, delete on public.quiz_attempts to authenticated;
-grant select, insert, update, delete on public.quiz_answers to authenticated;
-grant select on public.user_roles to authenticated;
+grant usage on schema public to authenticated, anon, service_role;
+grant select, insert, update, delete on public.teachers to authenticated, service_role;
+grant select, insert, update, delete on public.sections to authenticated, service_role;
+grant select, insert, update, delete on public.students to authenticated, service_role;
+grant select, insert, update, delete on public.learn_progress to authenticated, service_role;
+grant select, insert, update, delete on public.quiz_settings to authenticated, service_role;
+grant select, insert, update, delete on public.quiz_attempts to authenticated, service_role;
+grant select, insert, update, delete on public.quiz_answers to authenticated, service_role;
+grant select on public.user_roles to authenticated, service_role;

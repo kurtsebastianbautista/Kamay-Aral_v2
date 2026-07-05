@@ -4,12 +4,11 @@ import Link from 'next/link'
 import { ChevronLeft } from 'lucide-react'
 import SectionDetailView from '@/components/shared/SectionDetailView'
 
-interface Props { params: Promise<{ sectionId: string }> }
+interface Props { params: Promise<{ teacherId: string; sectionId: string }> }
 
-export default async function SectionDetailPage({ params }: Props) {
-  const { sectionId } = await params
+export default async function AdminSectionDetailPage({ params }: Props) {
+  const { teacherId, sectionId } = await params
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
 
   const { data: section } = await supabase
     .from('sections')
@@ -17,7 +16,7 @@ export default async function SectionDetailPage({ params }: Props) {
     .eq('id', sectionId)
     .single()
 
-  if (!section || section.teacher_id !== user!.id) notFound()
+  if (!section || section.teacher_id !== teacherId) notFound()
 
   const { data: students } = await supabase
     .from('students')
@@ -57,8 +56,8 @@ export default async function SectionDetailPage({ params }: Props) {
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/teacher/sections" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-2">
-          <ChevronLeft className="h-4 w-4" /> Sections
+        <Link href={`/admin/faculty/${teacherId}`} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-2">
+          <ChevronLeft className="h-4 w-4" /> Teacher
         </Link>
         <h1 className="text-2xl font-bold">Section: {section.name}</h1>
       </div>
@@ -67,7 +66,7 @@ export default async function SectionDetailPage({ params }: Props) {
         sectionId={sectionId}
         students={studentRows}
         isEnabled={isEnabled}
-        studentHref={(studentId) => `/teacher/sections/${sectionId}/students/${studentId}`}
+        studentHref={(studentId) => `/admin/students/${studentId}`}
       />
     </div>
   )

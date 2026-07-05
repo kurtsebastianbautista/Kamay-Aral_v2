@@ -1,0 +1,43 @@
+import { createClient } from '@/lib/supabase/server'
+import StudentSearchList from '@/components/admin/StudentSearchList'
+import CreateStudentDialog from '@/components/shared/CreateStudentDialog'
+
+export default async function AdminStudentsPage() {
+  const supabase = await createClient()
+
+  const { data: students } = await supabase
+    .from('students')
+    .select('id, full_name, username, section_id')
+    .order('full_name')
+
+  const sectionIds = [...new Set((students ?? []).map((s) => s.section_id).filter((id): id is string => !!id))]
+  const { data: sections } = sectionIds.length > 0
+    ? await supabase.from('sections').select('id, name').in('id', sectionIds)
+    : { data: [] }
+
+  function sectionName(sectionId: string | null) {
+    if (!sectionId) return null
+    return sections?.find((s) => s.id === sectionId)?.name ?? null
+  }
+
+  const studentList = (students ?? []).map((s) => ({
+    id: s.id,
+    full_name: s.full_name,
+    username: s.username,
+    sectionName: sectionName(s.section_id),
+  }))
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">Student Registry</h1>
+          <p className="text-muted-foreground">All registered students.</p>
+        </div>
+        <CreateStudentDialog />
+      </div>
+
+      <StudentSearchList students={studentList} />
+    </div>
+  )
+}

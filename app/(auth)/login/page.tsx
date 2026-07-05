@@ -9,38 +9,35 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { toast } from 'sonner'
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
+import { Eye, EyeOff } from 'lucide-react'
+import { shadowEmailFor } from '@/lib/shadow-email'
 
-type Mode = 'student' | 'teacher'
+function destinationFor(role: string | undefined) {
+  if (role === 'admin') return '/admin/overview'
+  if (role === 'teacher') return '/teacher/dashboard'
+  return '/dashboard'
+}
 
 export default function LoginPage() {
   const router = useRouter()
-  const [mode, setMode] = useState<Mode>('student')
-  const [email, setEmail] = useState('')
+  const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
+  const [showPass, setShowPass] = useState(false)
+  const [rememberMe, setRememberMe] = useState(true)
   const [loading, setLoading] = useState(false)
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     try {
-      const supabase = createClient()
+      const supabase = createClient({ persist: rememberMe })
+      const trimmed = identifier.trim()
+      const email = trimmed.includes('@') ? trimmed : shadowEmailFor(trimmed)
+
       const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) throw error
+      if (error) throw new Error('Incorrect email/username or password')
 
-      const role = data.user.user_metadata?.role as string | undefined
-      const isTeacher = role === 'teacher'
-
-      if (mode === 'teacher' && !isTeacher) {
-        await supabase.auth.signOut()
-        throw new Error('This account is not a teacher account.')
-      }
-      if (mode === 'student' && isTeacher) {
-        await supabase.auth.signOut()
-        throw new Error('Please use the Teacher tab to sign in.')
-      }
-
-      router.push(isTeacher ? '/teacher/dashboard' : '/dashboard')
+      router.push(destinationFor(data.user.user_metadata?.role))
       router.refresh()
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : 'Login failed')
@@ -57,52 +54,54 @@ export default function LoginPage() {
         <CardDescription>Filipino Sign Language Learning</CardDescription>
       </CardHeader>
 
-      {/* Mode toggle */}
-      <div className="px-6 pb-4">
-        <div className="flex rounded-xl border p-1 gap-1 bg-muted">
-          {(['student', 'teacher'] as Mode[]).map((m) => (
-            <button
-              key={m}
-              onClick={() => setMode(m)}
-              className={cn(
-                'flex-1 rounded-lg py-2 text-sm font-semibold capitalize transition-all',
-                mode === m
-                  ? 'bg-white text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground',
-              )}
-            >
-              {m === 'student' ? '🎓 Student' : '👩‍🏫 Teacher'}
-            </button>
-          ))}
-        </div>
-      </div>
-
       <CardContent className="pt-0">
         <form onSubmit={handleLogin} className="space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="identifier">Email or Username</Label>
             <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="identifier"
+              placeholder="you@example.com or username"
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
               required
-              autoComplete="email"
-              inputMode="email"
+              autoComplete="username"
             />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete="current-password"
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPass ? 'text' : 'password'}
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPass((p) => !p)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+              >
+                {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <label className="flex items-center gap-2 text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300"
+              />
+              Remember me
+            </label>
+            <Link href="/forgot-password" className="font-medium text-indigo-600 hover:underline">
+              Forgot password?
+            </Link>
           </div>
 
           <Button
@@ -113,20 +112,9 @@ export default function LoginPage() {
             {loading ? 'Signing in…' : 'Sign in'}
           </Button>
 
-          {mode === 'teacher' && (
-            <p className="text-center text-sm text-muted-foreground">
-              No account?{' '}
-              <Link href="/register" className="font-medium text-indigo-600 hover:underline">
-                Create teacher account
-              </Link>
-            </p>
-          )}
-
-          {mode === 'student' && (
-            <p className="text-center text-xs text-muted-foreground">
-              Your account is created by your teacher.
-            </p>
-          )}
+          <p className="text-center text-xs text-muted-foreground">
+            Accounts are created by your teacher or admin.
+          </p>
         </form>
       </CardContent>
     </Card>
