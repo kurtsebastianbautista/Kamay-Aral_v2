@@ -29,7 +29,7 @@ export default async function DashboardPage() {
     <div className="px-4 pt-8 pb-4">
       <div className="mb-6">
         <p className="text-sm text-muted-foreground">Welcome back,</p>
-        <h1 className="text-2xl font-bold">{student?.full_name ?? 'Student'} 👋</h1>
+        <h1 className="text-3xl text-[#694B26] font-black">{student?.full_name ?? 'Student'} 👋</h1>
       </div>
 
       <h2 className="mb-3 text-base font-semibold text-muted-foreground uppercase tracking-wide">
@@ -46,17 +46,16 @@ export default async function DashboardPage() {
             <Link
               key={mod.id}
               href={hasContent ? `/module/${mod.id}` : '#'}
-              className={`relative flex flex-col gap-3 rounded-2xl border bg-white p-4 shadow-sm transition-all active:scale-95 ${
-                !hasContent ? 'opacity-50 pointer-events-none' : 'hover:shadow-md'
-              }`}
+              className={`relative flex flex-col gap-3 mt-1 rounded-2xl ${mod.color} p-4 transition-all active:scale-95 ${!hasContent ? 'opacity-50 pointer-events-none' : ''
+                }`}
             >
               <div className="flex items-start justify-between">
                 <span className="text-3xl">{mod.icon}</span>
                 <ProgressRing percent={percent} size={52} strokeWidth={5} />
               </div>
               <div>
-                <p className="font-semibold leading-tight text-sm">{mod.title}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <p className="font-extrabold text-white text-lg">{mod.title}</p>
+                <p className="text-xs text-[#fafafabd] mt-0.5">
                   {hasContent ? `${mod.subModules.length} sections` : 'Coming soon'}
                 </p>
               </div>

@@ -8,6 +8,7 @@ const module: Module = {
   description: 'Express feelings and emotions in Filipino Sign Language.',
   icon: '😊',
   subModules: [],
+  color: 'bg-[#FCCF52] shadow-[0_4px_0_#C69202] hover:bg-[#F3BD25]'
 }
 
 export default module

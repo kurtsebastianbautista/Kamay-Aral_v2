@@ -50,8 +50,8 @@ export default function LoginPage() {
     <Card className="w-full max-w-sm shadow-lg">
       <CardHeader className="space-y-1 text-center pb-4">
         <div className="mb-2 text-4xl">🤟</div>
-        <CardTitle className="text-2xl font-bold">Kamay Aral</CardTitle>
-        <CardDescription>Filipino Sign Language Learning</CardDescription>
+        <CardTitle className="text-3xl text-[#694B26] font-black">Kamay Aral</CardTitle>
+        <CardDescription>Your Partner in Learning Filipino Sign Language</CardDescription>
       </CardHeader>
 
       <CardContent className="pt-0">
@@ -65,6 +65,7 @@ export default function LoginPage() {
               onChange={(e) => setIdentifier(e.target.value)}
               required
               autoComplete="username"
+              className='bg-w'
             />
           </div>
           <div className="space-y-1.5">
@@ -99,14 +100,14 @@ export default function LoginPage() {
               />
               Remember me
             </label>
-            <Link href="/forgot-password" className="font-medium text-indigo-600 hover:underline">
+            <Link href="/forgot-password" className="font-medium text-[#FFA93C] hover:underline">
               Forgot password?
             </Link>
           </div>
 
           <Button
             type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700"
+            className="w-full p-5 bg-[#0BC2D7] hover:bg-[#00ADC0] shadow-[0_3px_0_#149AA9] font-bold text-base"
             disabled={loading}
           >
             {loading ? 'Signing in…' : 'Sign in'}
