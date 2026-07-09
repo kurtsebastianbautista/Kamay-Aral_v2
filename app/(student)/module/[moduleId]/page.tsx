@@ -49,7 +49,7 @@ export default async function ModulePage({ params }: { params: Promise<{ moduleI
       <div className="mb-6 flex items-center gap-3">
         <span className="text-4xl">{mod.icon}</span>
         <div>
-          <h1 className="text-xl font-bold">{mod.title}</h1>
+          <h1 className="text-2xl text-[#694B26] font-black">{mod.title}</h1>
           <p className="text-sm text-muted-foreground">{mod.description}</p>
         </div>
       </div>
@@ -60,37 +60,37 @@ export default async function ModulePage({ params }: { params: Promise<{ moduleI
           const quizEnabled = isQuizEnabled(sm.id)
 
           return (
-            <div key={sm.id} className="rounded-2xl border bg-white shadow-sm overflow-hidden">
-              <div className="p-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-600">
+            <div key={sm.id} className="rounded-2xl bg-[#FDEFCA] shadow-[0_4px_0_#EFD385] overflow-hidden">
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-5">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A5D5DA] text-xs font-bold text-[#007B89] mr-3">
                     {idx + 1}
                   </span>
-                  <h2 className="font-semibold">{sm.title}</h2>
+                  <h2 className="text-xl text-[#694B26] font-extrabold">{sm.title}</h2>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-5">
                   <Link
                     href={`/module/${moduleId}/${sm.id}/learn`}
-                    className="flex flex-col items-center justify-center gap-1 rounded-xl bg-indigo-600 px-3 py-3 text-white text-sm font-medium active:scale-95 transition-transform"
+                    className="flex flex-row items-center justify-center gap-1 rounded-xl bg-[#FCCF52] p-2 text-[#694B26] text-sm font-bold active:scale-95 transition-transform"
                   >
                     <span className="text-lg">📖</span>
                     Learn
                   </Link>
                   <Link
                     href={`/module/${moduleId}/${sm.id}/activity`}
-                    className="flex flex-col items-center justify-center gap-1 rounded-xl bg-emerald-600 px-3 py-3 text-white text-sm font-medium active:scale-95 transition-transform"
+                    className="flex flex-row items-center justify-center gap-1 rounded-xl bg-[#FFA93C] p-2 text-white text-sm font-bold active:scale-95 transition-transform"
                   >
                     <span className="text-lg">🎮</span>
                     Activity
                   </Link>
                 </div>
 
-                <div className="mt-2">
+                <div className="mt-3">
                   {quizEnabled && !attempt ? (
                     <Link
                       href={`/module/${moduleId}/${sm.id}/quiz`}
-                      className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-amber-500 px-3 py-2.5 text-white text-sm font-medium active:scale-95 transition-transform"
+                      className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#0BC2D7] p-3 text-white text-sm font-bold active:scale-95 transition-transform"
                     >
                       <span>📝</span>
                       Take Quiz

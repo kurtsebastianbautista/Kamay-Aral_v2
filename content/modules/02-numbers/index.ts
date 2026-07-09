@@ -8,6 +8,7 @@ const module: Module = {
   description: 'Learn to sign numbers and count in Filipino Sign Language.',
   icon: '🔢',
   subModules: [],
+  color: 'bg-[#63B6F5] shadow-[0_4px_0_#2087D5] hover:bg-[#43AAF9]'
 }
 
 export default module

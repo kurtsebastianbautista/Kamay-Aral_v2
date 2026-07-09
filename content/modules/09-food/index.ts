@@ -8,6 +8,7 @@ const module: Module = {
   description: 'Signs for food, drinks, and everyday routines.',
   icon: '🍚',
   subModules: [],
+  color: 'bg-[#E14E4E] shadow-[0_4px_0_#9B0505] hover:bg-[#D33939]'
 }
 
 export default module

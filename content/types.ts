@@ -45,4 +45,5 @@ export interface Module {
   /** Emoji or icon name for the module card */
   icon: string
   subModules: SubModule[]
+  color: string
 }

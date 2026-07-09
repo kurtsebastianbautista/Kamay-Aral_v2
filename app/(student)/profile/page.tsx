@@ -24,7 +24,7 @@ export default async function ProfilePage() {
           {student?.full_name?.[0]?.toUpperCase() ?? '?'}
         </div>
         <div>
-          <h1 className="text-xl font-bold">{student?.full_name}</h1>
+          <h1 className="text-2xl text-[#694B26] font-black">{student?.full_name}</h1>
           <p className="text-sm text-muted-foreground">{user?.email}</p>
         </div>
       </div>

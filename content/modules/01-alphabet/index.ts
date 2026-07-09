@@ -11,6 +11,7 @@ const module: Module = {
   description: 'Learn the Filipino Sign Language alphabet from A to Z.',
   icon: '🔤',
   subModules: [aToG, hToN, oToU, vToZ],
+  color: 'bg-[#FFAB41] shadow-[0_4px_0_#F18701] hover:bg-[#FF9F26]'
 }
 
 export default module
