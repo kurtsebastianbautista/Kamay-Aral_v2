@@ -54,6 +54,11 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
+  // Root path always sends signed-in users to their role's landing page
+  if (pathname === '/') {
+    return NextResponse.redirect(new URL(destinationFor(user.user_metadata?.role), request.url))
+  }
+
   // Only teachers can access /teacher routes
   if (pathname.startsWith('/teacher')) {
     if (user.user_metadata?.role !== 'teacher') {
