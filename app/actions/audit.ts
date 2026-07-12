@@ -12,7 +12,12 @@ import { createAdminClient } from '@/lib/supabase/admin'
  * Never throws: a failed log write must never break the feature it's
  * attached to (account creation, quiz submission, etc).
  */
-export async function recordAuditLog(payload: { action: string; description: string }) {
+export async function recordAuditLog(payload: {
+  action: string
+  description: string
+  sectionId?: string | null
+  sectionName?: string | null
+}) {
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -37,6 +42,8 @@ export async function recordAuditLog(payload: { action: string; description: str
       actor_role: role,
       action: payload.action,
       description: payload.description,
+      section_id: payload.sectionId ?? null,
+      section_name: payload.sectionName ?? null,
     })
   } catch {
     // Swallow — logging must never surface an error to the caller.

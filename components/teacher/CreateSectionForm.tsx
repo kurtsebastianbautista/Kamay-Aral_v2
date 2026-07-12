@@ -21,9 +21,19 @@ export default function CreateSectionForm() {
     try {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
-      const { error } = await supabase.from('sections').insert({ teacher_id: user!.id, name: name.trim() })
+      const trimmedName = name.trim()
+      const { data: newSection, error } = await supabase
+        .from('sections')
+        .insert({ teacher_id: user!.id, name: trimmedName })
+        .select('id')
+        .single()
       if (error) throw new Error(error.message)
-      await recordAuditLog({ action: 'section.create', description: `created section ${name.trim()}` })
+      await recordAuditLog({
+        action: 'section.create',
+        description: `created section ${trimmedName}`,
+        sectionId: newSection?.id,
+        sectionName: trimmedName,
+      })
       setName('')
       toast.success(`Section "${name.trim()}" created`)
       router.refresh()

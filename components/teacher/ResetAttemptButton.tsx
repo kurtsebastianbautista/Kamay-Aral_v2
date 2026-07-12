@@ -12,9 +12,11 @@ interface Props {
   attemptId: string
   studentName: string
   submoduleTitle: string
+  sectionId?: string | null
+  sectionName?: string | null
 }
 
-export default function ResetAttemptButton({ attemptId, studentName, submoduleTitle }: Props) {
+export default function ResetAttemptButton({ attemptId, studentName, submoduleTitle, sectionId, sectionName }: Props) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
@@ -28,6 +30,8 @@ export default function ResetAttemptButton({ attemptId, studentName, submoduleTi
       await recordAuditLog({
         action: 'attempt.reset',
         description: `reset ${studentName}'s quiz attempt for ${submoduleTitle}`,
+        sectionId,
+        sectionName,
       })
       toast.success('Attempt reset')
       router.refresh()

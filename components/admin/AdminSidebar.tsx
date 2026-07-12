@@ -88,8 +88,11 @@ export default function AdminSidebar() {
         <div className="flex flex-col border-b bg-white pb-2 md:hidden">{content}</div>
       )}
 
-      {/* Desktop sidebar */}
-      <aside className="hidden md:flex md:w-70 md:flex-col md:border-r md:bg-white md:min-h-screen">
+      {/* Desktop sidebar — sticky + h-screen (not min-h-screen) so it stays
+          pinned to the viewport instead of stretching to match tall page
+          content (e.g. a long audit log list), which pushed Settings/Sign
+          out below the fold and required scrolling the whole page to reach. */}
+      <aside className="hidden md:flex md:w-70 md:flex-col md:border-r md:bg-white md:h-screen md:sticky md:top-0 md:overflow-y-auto">
         {content}
       </aside>
     </>

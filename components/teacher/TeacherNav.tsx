@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, Users, LogOut, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Users, Settings, LogOut, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -52,7 +52,20 @@ export default function TeacherNav() {
           )
         })}
       </nav>
-      <div className="mt-auto px-2 pb-4">
+      <div className="mt-auto px-2 pb-4 flex flex-col gap-1">
+        <Link
+          href="/teacher/settings"
+          onClick={() => setOpen(false)}
+          className={cn(
+            'flex items-center gap-2 rounded-md px-6 py-3 text-sm font-medium transition-colors',
+            pathname.startsWith('/teacher/settings')
+              ? 'bg-[#ffffff75] text-white'
+              : 'text-white hover:bg-[#ffffff25]',
+          )}
+        >
+          <Settings className="h-4 w-4" />
+          Settings
+        </Link>
         <Button variant="ghost" size="lg" onClick={handleLogout} className="w-full justify-start gap-1.5 text-white">
           <LogOut className="h-5 w-5" />
           Sign out
@@ -74,8 +87,11 @@ export default function TeacherNav() {
         <div className="flex flex-col border-b bg-[#007B89] pb-2 md:hidden">{content}</div>
       )}
 
-      {/* Desktop sidebar */}
-      <aside className="hidden md:flex md:w-70 md:flex-col md:border-r md:bg-[#007B89] md:min-h-screen">
+      {/* Desktop sidebar — sticky + h-screen (not min-h-screen) so it stays
+          pinned to the viewport instead of stretching to match tall page
+          content (e.g. a long audit log list), which pushed Settings/Sign
+          out below the fold and required scrolling the whole page to reach. */}
+      <aside className="hidden md:flex md:w-70 md:flex-col md:border-r md:bg-[#007B89] md:h-screen md:sticky md:top-0 md:overflow-y-auto">
         {content}
       </aside>
     </>

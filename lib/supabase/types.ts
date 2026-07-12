@@ -46,9 +46,9 @@ export type Database = {
         Relationships: []
       }
       audit_logs: {
-        Row: { id: string; actor_id: string | null; actor_name: string; actor_role: string; action: string; description: string; created_at: string }
-        Insert: { id?: string; actor_id?: string | null; actor_name: string; actor_role: string; action: string; description: string; created_at?: string }
-        Update: { id?: string; actor_id?: string | null; actor_name?: string; actor_role?: string; action?: string; description?: string; created_at?: string }
+        Row: { id: string; actor_id: string | null; actor_name: string; actor_role: string; action: string; description: string; section_id: string | null; section_name: string | null; created_at: string }
+        Insert: { id?: string; actor_id?: string | null; actor_name: string; actor_role: string; action: string; description: string; section_id?: string | null; section_name?: string | null; created_at?: string }
+        Update: { id?: string; actor_id?: string | null; actor_name?: string; actor_role?: string; action?: string; description?: string; section_id?: string | null; section_name?: string | null; created_at?: string }
         Relationships: []
       }
     }

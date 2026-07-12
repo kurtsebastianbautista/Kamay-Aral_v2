@@ -117,11 +117,20 @@ export async function createStudentAction(payload: {
   }
 
   let description = `created student account for ${fullName}`
+  let taggedSection: { id: string; name: string } | null = null
   if (payload.sectionId) {
-    const { data: section } = await admin.from('sections').select('name').eq('id', payload.sectionId).single()
-    if (section) description += ` in section ${section.name}`
+    const { data: section } = await admin.from('sections').select('id, name').eq('id', payload.sectionId).single()
+    if (section) {
+      description += ` in section ${section.name}`
+      taggedSection = section
+    }
   }
-  await recordAuditLog({ action: 'student.create', description })
+  await recordAuditLog({
+    action: 'student.create',
+    description,
+    sectionId: taggedSection?.id,
+    sectionName: taggedSection?.name,
+  })
 }
 
 export async function deleteTeacherAction(teacherId: string) {
@@ -153,15 +162,19 @@ export async function createSectionForTeacherAction(payload: { teacherId: string
   const admin = createAdminClient()
   const name = payload.name.trim()
 
-  const { error } = await admin
+  const { data: newSection, error } = await admin
     .from('sections')
     .insert({ teacher_id: payload.teacherId, name })
+    .select('id')
+    .single()
   if (error) throw new Error(error.message)
 
   const { data: teacher } = await admin.from('teachers').select('full_name').eq('id', payload.teacherId).single()
   await recordAuditLog({
     action: 'section.create',
     description: `created section ${name} for ${teacher?.full_name ?? 'a teacher'}`,
+    sectionId: newSection?.id,
+    sectionName: name,
   })
 }
 
@@ -187,6 +200,8 @@ export async function deleteSectionAction(sectionId: string) {
   await recordAuditLog({
     action: 'section.delete',
     description: `deleted section ${section.name}`,
+    sectionId: section.id,
+    sectionName: section.name,
   })
 }
 
@@ -227,6 +242,8 @@ export async function removeStudentFromSectionAction(studentId: string) {
   await recordAuditLog({
     action: 'student.remove_from_section',
     description: `removed ${before?.full_name ?? 'a student'} from section ${oldSection?.name ?? 'unknown'}`,
+    sectionId: before?.section_id,
+    sectionName: oldSection?.name,
   })
 }
 
@@ -266,5 +283,7 @@ export async function addExistingStudentToSectionAction(payload: { studentId: st
   await recordAuditLog({
     action: 'student.add_to_section',
     description: `added ${target?.full_name ?? 'a student'} to section ${section?.name ?? 'unknown'}`,
+    sectionId: payload.sectionId,
+    sectionName: section?.name,
   })
 }

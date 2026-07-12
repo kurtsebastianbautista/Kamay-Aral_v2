@@ -33,6 +33,8 @@ export default function QuizToggle({ sectionId, sectionName, submoduleId, submod
       await recordAuditLog({
         action: 'quiz.toggle',
         description: `${next ? 'enabled' : 'disabled'} quiz for ${submoduleTitle} in section ${sectionName}`,
+        sectionId,
+        sectionName,
       })
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : 'Failed to update quiz setting')
