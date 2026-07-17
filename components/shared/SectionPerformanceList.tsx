@@ -2,16 +2,18 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowUp, ArrowDown, AlertTriangle } from 'lucide-react'
+import { ArrowUp, ArrowDown, AlertTriangle, TrendingUp, TrendingDown } from 'lucide-react'
 
 interface Row {
   id: string
   full_name: string
   avg: number | null
+  trend?: 'up' | 'down' | null
+  completedCount?: number
   href: string
 }
 
-export default function SectionPerformanceList({ students }: { students: Row[] }) {
+export default function SectionPerformanceList({ students, totalQuizzes }: { students: Row[]; totalQuizzes: number }) {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
 
   const ranked = [...students].sort((a, b) => {
@@ -65,11 +67,18 @@ export default function SectionPerformanceList({ students }: { students: Row[] }
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-600">
                 {student.full_name[0]?.toUpperCase()}
               </div>
-              <p className="font-medium">{student.full_name}</p>
+              <div>
+                <p className="font-medium">{student.full_name}</p>
+                <p className="text-xs text-muted-foreground">{student.completedCount ?? 0}/{totalQuizzes} quizzes taken</p>
+              </div>
             </div>
             {student.avg !== null ? (
-              <span className={`text-sm font-bold ${student.avg >= 80 ? 'text-emerald-600' : student.avg >= 50 ? 'text-amber-600' : 'text-red-600'}`}>
-                {student.avg}% avg
+              <span className="flex items-center gap-1">
+                {student.trend === 'up' && <TrendingUp className="h-3.5 w-3.5 text-emerald-600" />}
+                {student.trend === 'down' && <TrendingDown className="h-3.5 w-3.5 text-red-600" />}
+                <span className={`text-sm font-bold ${student.avg >= 80 ? 'text-emerald-600' : student.avg >= 50 ? 'text-amber-600' : 'text-red-600'}`}>
+                  {student.avg}% avg
+                </span>
               </span>
             ) : (
               <span className="text-xs text-muted-foreground">No data yet</span>

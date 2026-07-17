@@ -12,17 +12,20 @@ interface StudentRow {
   id: string
   full_name: string
   avg: number | null
+  trend?: 'up' | 'down' | null
+  completedCount?: number
 }
 
 interface Props {
   sectionId: string
   sectionName: string
   students: StudentRow[]
+  totalQuizzes: number
   isEnabled: (submoduleId: string) => boolean
   studentHref: (studentId: string) => string
 }
 
-export default function SectionDetailView({ sectionId, sectionName, students, isEnabled, studentHref }: Props) {
+export default function SectionDetailView({ sectionId, sectionName, students, totalQuizzes, isEnabled, studentHref }: Props) {
   return (
     <>
       <div>
@@ -99,6 +102,7 @@ export default function SectionDetailView({ sectionId, sectionName, students, is
         <p className="text-sm text-muted-foreground mb-3">Ranked by quiz average — lowest first highlights who may need attention.</p>
         <SectionPerformanceList
           students={students.map((s) => ({ ...s, href: studentHref(s.id) }))}
+          totalQuizzes={totalQuizzes}
         />
       </div>
     </>
