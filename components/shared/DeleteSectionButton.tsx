@@ -31,7 +31,7 @@ export default function DeleteSectionButton({ sectionId, sectionName, redirectTo
       size="sm"
       onClick={handleDelete}
       disabled={loading}
-      className="gap-1.5 text-red-600 hover:text-red-700"
+      className="gap-1.5 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
     >
       <Trash2 className="h-4 w-4" />
       Delete Section

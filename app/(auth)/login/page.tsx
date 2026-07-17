@@ -63,7 +63,7 @@ export default function LoginPage() {
     <Card className="w-full max-w-sm shadow-lg">
       <CardHeader className="space-y-1 text-center pb-4">
         <div className="mb-2 text-4xl">🤟</div>
-        <CardTitle className="text-3xl text-[#694B26] font-black">Kamay Aral</CardTitle>
+        <CardTitle className="text-3xl text-foreground font-black">Kamay Aral</CardTitle>
         <CardDescription>Your Partner in Learning Filipino Sign Language</CardDescription>
       </CardHeader>
 

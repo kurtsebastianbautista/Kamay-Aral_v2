@@ -29,7 +29,7 @@ export default function AttemptReview({ answers, items }: { answers: AnswerRow[]
     <div>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-1 text-xs font-semibold text-[#007B89]"
+        className="flex items-center gap-1 text-xs font-semibold text-[#007B89] dark:text-[#4DD8E8]"
       >
         Review Answers
         <ChevronDown className={cn('h-3.5 w-3.5 transition-transform', open && 'rotate-180')} />
@@ -39,12 +39,12 @@ export default function AttemptReview({ answers, items }: { answers: AnswerRow[]
           {answers.map((a, idx) => {
             const item = itemById.get(a.item_id)
             return (
-              <div key={idx} className="flex items-center justify-between gap-3 rounded-lg border bg-white px-3 py-2 text-xs">
+              <div key={idx} className="flex items-center justify-between gap-3 rounded-lg border bg-white dark:bg-card px-3 py-2 text-xs">
                 <div className="flex items-center gap-2 min-w-0">
                   {a.is_correct ? (
-                    <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+                    <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
                   ) : (
-                    <XCircle className="h-4 w-4 shrink-0 text-red-600" />
+                    <XCircle className="h-4 w-4 shrink-0 text-red-600 dark:text-red-400" />
                   )}
                   <div className="min-w-0">
                     <p className="font-medium">{item?.label ?? a.item_id}</p>

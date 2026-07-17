@@ -79,8 +79,8 @@ export default function Spelling({ item, mode, initialAnswer, onAnswer }: Props)
             placeholder="Type your answer…"
             className={cn(
               'h-18 text-center !text-2xl md:!text-2xl font-semibold rounded-xl border-2',
-              locked && isCorrect && 'border-[#579F10] bg-[#D8F2BF]',
-              locked && !isCorrect && 'border-[#C61518] bg-[#FFDEDF]',
+              locked && isCorrect && 'border-[#579F10] bg-[#D8F2BF] dark:bg-[#1F3A0F]',
+              locked && !isCorrect && 'border-[#C61518] bg-[#FFDEDF] dark:bg-[#3D1315]',
             )}
             autoCapitalize="none"
             autoCorrect="off"
@@ -99,7 +99,7 @@ export default function Spelling({ item, mode, initialAnswer, onAnswer }: Props)
         {locked && (
           <div className={cn(
             'rounded-2xl p-4 text-center',
-            isCorrect ? 'bg-[#D8F2BF] text-[#579F10]' : 'bg-[#FFDEDF] text-[#C61518]',
+            isCorrect ? 'bg-[#D8F2BF] dark:bg-[#1F3A0F] text-[#579F10] dark:text-[#8FD65C]' : 'bg-[#FFDEDF] dark:bg-[#3D1315] text-[#C61518] dark:text-[#FF6B70]',
           )}>
             <p className="font-bold text-lg">{isCorrect ? '🎉 Correct!' : '❌ Not quite'}</p>
             {!isCorrect && (

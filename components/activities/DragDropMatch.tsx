@@ -96,7 +96,7 @@ export default function DragDropMatch({ items, mode, initialMatches, onAnswer }:
         Match the sign to the picture
       </p>
       {selectedVideo && (
-        <p className="text-center text-lg text-[#007B89] font-medium">
+        <p className="text-center text-lg text-[#007B89] dark:text-[#4DD8E8] font-medium">
           Now tap the matching picture →
         </p>
       )}
@@ -121,8 +121,8 @@ export default function DragDropMatch({ items, mode, initialMatches, onAnswer }:
                   isSelected && 'border-slate-400 ring-3 ring-slate-300',
                   !isSelected && matchedItem && !locked && color.border,
                   !isSelected && !(matchedItem && !locked) && !locked && 'border-transparent',
-                  locked && isCorrect && 'border-emerald-500 bg-emerald-50',
-                  locked && !isCorrect && 'border-red-500 bg-red-50',
+                  locked && isCorrect && 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950',
+                  locked && !isCorrect && 'border-red-500 bg-red-50 dark:bg-red-950',
                 )}
               >
                 <video
@@ -164,10 +164,10 @@ export default function DragDropMatch({ items, mode, initialMatches, onAnswer }:
                 disabled={locked}
                 className={cn(
                   'relative aspect-video flex w-full flex-col items-center justify-center rounded-xl border-3 p-2 transition-all active:scale-95',
-                  selectedVideo && !isMatched ? 'border-[#D9BA87] bg-[#ECE7DF]' : 'border-[#DAD2C5] bg-white',
+                  selectedVideo && !isMatched ? 'border-[#D9BA87] dark:border-[#6B5330] bg-[#ECE7DF] dark:bg-[#3A2C1D]' : 'border-[#DAD2C5] dark:border-[#4A3B2A] bg-white dark:bg-card',
                   isMatched && !locked && color && cn(color.border, color.bg),
-                  locked && matchedCorrectly && 'border-[#579F10] bg-[#D8F2BF]',
-                  locked && !matchedCorrectly && isMatched && 'border-[#C61518] bg-[#FFDEDF]',
+                  locked && matchedCorrectly && 'border-[#579F10] bg-[#D8F2BF] dark:bg-[#1F3A0F]',
+                  locked && !matchedCorrectly && isMatched && 'border-[#C61518] bg-[#FFDEDF] dark:bg-[#3D1315]',
                 )}
               >
                 {item.imagePath ? (
@@ -181,7 +181,7 @@ export default function DragDropMatch({ items, mode, initialMatches, onAnswer }:
                     />
                   </div>
                 ) : (
-                  <span className="flex min-h-0 w-full flex-1 items-center justify-center text-2xl font-black text-indigo-600">
+                  <span className="flex min-h-0 w-full flex-1 items-center justify-center text-2xl font-black text-indigo-600 dark:text-indigo-300">
                     {item.label}
                   </span>
                 )}
@@ -195,7 +195,7 @@ export default function DragDropMatch({ items, mode, initialMatches, onAnswer }:
       {locked && (
         <div className={cn(
           'rounded-2xl p-4 text-center',
-          allCorrect ? 'bg-[#D8F2BF] text-[#579F10] ' : 'bg-[#FFECB7] text-[#FFA93C]',
+          allCorrect ? 'bg-[#D8F2BF] dark:bg-[#1F3A0F] text-[#579F10] dark:text-[#8FD65C] ' : 'bg-[#FFECB7] dark:bg-[#4A3714] text-[#FFA93C] dark:text-[#FFB84D]',
         )}>
           <p className="font-bold text-lg">{allCorrect ? '🎉 Perfect match!' : `${score}/3 correct`}</p>
         </div>

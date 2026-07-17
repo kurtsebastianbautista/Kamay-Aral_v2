@@ -63,7 +63,7 @@ export default function StudentProgressView({ studentName, sectionId, sectionNam
         title: mod.title,
         icon: mod.icon,
         badge: avg !== null ? (
-          <span className={`text-xs font-bold ${avg >= 80 ? 'text-emerald-600' : avg >= 50 ? 'text-amber-600' : 'text-red-600'}`}>
+          <span className={`text-xs font-bold ${avg >= 80 ? 'text-emerald-600 dark:text-emerald-400' : avg >= 50 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
             {avg}% avg
           </span>
         ) : undefined,
@@ -78,7 +78,7 @@ export default function StudentProgressView({ studentName, sectionId, sectionNam
                 : null
 
               return (
-                <div key={sm.id} className="rounded-xl border bg-white p-4 shadow-sm space-y-3">
+                <div key={sm.id} className="rounded-xl border bg-white dark:bg-card p-4 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">{sm.title}</p>
@@ -89,7 +89,7 @@ export default function StudentProgressView({ studentName, sectionId, sectionNam
                     {submitted && percent !== null && (
                       <div className="flex items-center gap-2">
                         <span className={`text-sm font-bold ${
-                          percent >= 80 ? 'text-emerald-600' : percent >= 50 ? 'text-amber-600' : 'text-red-600'
+                          percent >= 80 ? 'text-emerald-600 dark:text-emerald-400' : percent >= 50 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'
                         }`}>
                           {attempt.score}/{attempt.total} ({percent}%)
                         </span>
@@ -103,7 +103,7 @@ export default function StudentProgressView({ studentName, sectionId, sectionNam
                       </div>
                     )}
                     {attempt && !submitted && (
-                      <span className="text-xs text-amber-600 font-medium">In progress</span>
+                      <span className="text-xs text-amber-600 dark:text-amber-400 font-medium">In progress</span>
                     )}
                   </div>
 
@@ -123,9 +123,9 @@ export default function StudentProgressView({ studentName, sectionId, sectionNam
                               key={item.id}
                               title={`${item.label}: ${correctCount}/${results.length} correct`}
                               className={`flex items-center justify-center gap-0.5 rounded-lg px-1 py-2 text-xs font-bold ${
-                                status === 'correct' ? 'bg-emerald-100 text-emerald-700' :
-                                status === 'partial' ? 'bg-amber-100 text-amber-700' :
-                                status === 'wrong' ? 'bg-red-100 text-red-700' :
+                                status === 'correct' ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300' :
+                                status === 'partial' ? 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300' :
+                                status === 'wrong' ? 'bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300' :
                                 'bg-muted text-muted-foreground'
                               }`}
                             >

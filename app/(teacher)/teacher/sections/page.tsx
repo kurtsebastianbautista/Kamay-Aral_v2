@@ -33,11 +33,11 @@ export default async function SectionsPage() {
           <Link
             key={section.id}
             href={`/teacher/sections/${section.id}`}
-            className="flex items-center justify-between rounded-xl border bg-white p-4 shadow-sm hover:shadow-md transition-shadow"
+            className="flex items-center justify-between rounded-xl border bg-white dark:bg-card p-4 shadow-sm hover:shadow-md transition-shadow"
           >
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100">
-                <Users className="h-5 w-5 text-indigo-600" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-950">
+                <Users className="h-5 w-5 text-indigo-600 dark:text-indigo-300" />
               </div>
               <div>
                 <p className="font-semibold">{section.name}</p>

@@ -41,7 +41,7 @@ export default function FontSizeControl() {
             className={cn(
               'flex-1 rounded-xl border py-2 text-sm font-semibold transition-colors',
               size === s.id
-                ? 'border-[#0BC2D7] bg-[#0BC2D7]/10 text-[#007B89]'
+                ? 'border-[#0BC2D7] bg-[#0BC2D7]/10 text-[#007B89] dark:text-[#4DD8E8]'
                 : 'border-border text-muted-foreground hover:bg-muted',
             )}
           >

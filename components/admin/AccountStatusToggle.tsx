@@ -40,7 +40,7 @@ export default function AccountStatusToggle({ id, name, isActive, entityLabel, d
   return (
     <Button
       variant="outline"
-      className={isActive ? 'gap-1.5 text-red-600 hover:text-red-700' : 'gap-1.5 text-emerald-600 hover:text-emerald-700'}
+      className={isActive ? 'gap-1.5 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300' : 'gap-1.5 text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300'}
       onClick={handleToggle}
       disabled={loading}
     >

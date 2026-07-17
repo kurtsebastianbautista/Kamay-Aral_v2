@@ -52,27 +52,27 @@ export default async function TeacherDashboardPage() {
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-        <Card className="bg-[#FDEFCA] shadow-[0_4px_0_#EFD385] ring-0 px-2">
+        <Card className="bg-[#FDEFCA] dark:bg-[#3D3319] shadow-[0_4px_0_#EFD385] dark:shadow-[0_4px_0_#241C0D] ring-0 px-2">
           <CardHeader className="pb-2">
-            <CardTitle className="text-lg font-bold text-[#694B26]">Sections</CardTitle>
+            <CardTitle className="text-lg font-bold text-foreground">Sections</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-black text-[#694B26]">{sections?.length ?? 0}</p>
+            <p className="text-4xl font-black text-foreground">{sections?.length ?? 0}</p>
             <p className="text-sm font-medium text-muted-foreground mt-6 my-2">Active Classes</p>
           </CardContent>
         </Card>
-        <Card className="bg-[#FDEFCA] shadow-[0_4px_0_#EFD385] ring-0 px-2">
+        <Card className="bg-[#FDEFCA] dark:bg-[#3D3319] shadow-[0_4px_0_#EFD385] dark:shadow-[0_4px_0_#241C0D] ring-0 px-2">
           <CardHeader className="pb-2">
-            <CardTitle className="text-lg font-bold text-[#694B26]">Students</CardTitle>
+            <CardTitle className="text-lg font-bold text-foreground">Students</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-black text-[#694B26]">{studentCounts?.length ?? 0}</p>
+            <p className="text-4xl font-black text-foreground">{studentCounts?.length ?? 0}</p>
             <p className="text-sm font-medium text-muted-foreground mt-6 my-2">Total Students</p>
           </CardContent>
         </Card>
-        <Card className="bg-[#FDEFCA] shadow-[0_4px_0_#EFD385] ring-0 px-2">
+        <Card className="bg-[#FDEFCA] dark:bg-[#3D3319] shadow-[0_4px_0_#EFD385] dark:shadow-[0_4px_0_#241C0D] ring-0 px-2">
           <CardHeader className="pb-2">
-            <CardTitle className="text-lg font-bold text-[#694B26] flex items-center gap-3">
+            <CardTitle className="text-lg font-bold text-foreground flex items-center gap-3">
               <AlertTriangle className="h-6 w-6 text-amber-500" />
               Need Attention
             </CardTitle>
@@ -84,7 +84,7 @@ export default async function TeacherDashboardPage() {
         </Card>
       </div>
 
-      <div className="flex h-full flex-col rounded-xl border bg-white shadow-sm">
+      <div className="flex h-full flex-col rounded-xl border bg-white dark:bg-card shadow-sm">
         <div className="flex items-center justify-between px-4 pt-4 pb-3">
           <h2 className="font-semibold">Your Sections</h2>
           <Link href="/teacher/sections" className="text-sm text-[#0BC2D7] font-semibold hover:underline">
@@ -97,11 +97,11 @@ export default async function TeacherDashboardPage() {
               <Link
                 key={section.id}
                 href={`/teacher/sections/${section.id}`}
-                className="flex items-center justify-between rounded-xl border bg-white p-4 shadow-sm hover:shadow-md transition-shadow"
+                className="flex items-center justify-between rounded-xl border bg-white dark:bg-card p-4 shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100">
-                    <Users className="h-5 w-5 text-indigo-600" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-950">
+                    <Users className="h-5 w-5 text-indigo-600 dark:text-indigo-300" />
                   </div>
                   <div>
                     <p className="font-semibold">{section.name}</p>
@@ -126,7 +126,7 @@ export default async function TeacherDashboardPage() {
         <h2 className="font-semibold mb-3">Modules</h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {MODULES.map((mod) => (
-            <div key={mod.id} className={`rounded-xl border bg-white p-3 shadow-sm ${mod.subModules.length === 0 ? 'opacity-50' : ''}`}>
+            <div key={mod.id} className={`rounded-xl border bg-white dark:bg-card p-3 shadow-sm ${mod.subModules.length === 0 ? 'opacity-50' : ''}`}>
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-2xl">{mod.icon}</span>
                 <p className="text-xs font-semibold leading-tight">{mod.title}</p>

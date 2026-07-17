@@ -14,7 +14,7 @@ const links = [
 export default function StudentNav() {
   const pathname = usePathname()
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 shadow-[0_0_5px_#d4d4d4] bg-[#faf8f4]">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 shadow-[0_0_5px_#d4d4d4] dark:shadow-[0_0_5px_rgba(0,0,0,0.6)] bg-background">
       <div className="mx-auto flex max-w-md items-center justify-around">
         {links.map(({ href, label, icon: Icon }) => {
           const active = pathname === href || (href !== '/dashboard' && pathname.startsWith(href))
@@ -24,7 +24,7 @@ export default function StudentNav() {
               href={href}
               className={cn(
                 'flex flex-1 flex-col items-center gap-1 py-3 text-xs font-medium transition-colors',
-                active ? 'text-[#007B89]' : 'text-muted-foreground hover:text-foreground',
+                active ? 'text-[#007B89] dark:text-[#4DD8E8]' : 'text-muted-foreground hover:text-foreground',
               )}
             >
               <Icon className="h-5 w-5" />

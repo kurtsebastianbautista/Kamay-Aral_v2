@@ -45,7 +45,7 @@ export default async function ModulePage({ params }: { params: Promise<{ moduleI
       <div className="mb-6 flex items-center gap-3">
         <span className="text-4xl">{mod.icon}</span>
         <div>
-          <h1 className="text-2xl text-[#694B26] font-black">{mod.title}</h1>
+          <h1 className="text-2xl text-foreground font-black">{mod.title}</h1>
           <p className="text-sm text-muted-foreground">{mod.description}</p>
         </div>
       </div>
@@ -56,13 +56,13 @@ export default async function ModulePage({ params }: { params: Promise<{ moduleI
           const quizEnabled = isQuizEnabled(sm.id)
 
           return (
-            <div key={sm.id} className="rounded-2xl bg-[#FDEFCA] shadow-[0_4px_0_#EFD385] overflow-hidden">
+            <div key={sm.id} className="rounded-2xl bg-[#FDEFCA] dark:bg-[#3D3319] shadow-[0_4px_0_#EFD385] dark:shadow-[0_4px_0_#241C0D] overflow-hidden">
               <div className="p-6">
                 <div className="flex items-center gap-2 mb-5">
                   <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A5D5DA] text-xs font-bold text-[#007B89] mr-3">
                     {idx + 1}
                   </span>
-                  <h2 className="text-2xl text-[#694B26] font-extrabold ">{sm.title}</h2>
+                  <h2 className="text-2xl text-[#694B26] dark:text-[#F3E7D6] font-extrabold ">{sm.title}</h2>
                 </div>
 
                 <div className="grid grid-cols-2 gap-5">
@@ -97,10 +97,10 @@ export default async function ModulePage({ params }: { params: Promise<{ moduleI
                         <CheckCircle2 className="h-4 w-4 text-[#579F10]" />
                         Quiz completed
                       </div>
-                      <span className="font-bold text-[#007B89]">{attempt.score}/{attempt.total}</span>
+                      <span className="font-bold text-[#007B89] dark:text-[#4DD8E8]">{attempt.score}/{attempt.total}</span>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-1.5 rounded-xl bg-[#CFC2B5] px-3 py-2.5 text-base text-white">
+                    <div className="flex items-center gap-1.5 rounded-xl bg-[#CFC2B5] dark:bg-[#4A3B2A] px-3 py-2.5 text-base text-white">
                       <Lock className="h-4 w-4" />
                       Quiz not available yet
                     </div>

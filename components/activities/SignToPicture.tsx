@@ -74,12 +74,12 @@ export default function SignToPicture({ item, distractors, mode, initialAnswer, 
               onClick={() => handleSelect(choice.id)}
               disabled={locked}
               className={cn(
-                'relative flex flex-col items-center gap-2 rounded-2xl bg-white p-6 shadow-xs border-2 border-[#DAD2C5] transition-all active:scale-95',
-                !answered && !isSelected && 'hover:border-[#0BC2D7] border-border bg-white',
+                'relative flex flex-col items-center gap-2 rounded-2xl bg-white dark:bg-card p-6 shadow-xs border-2 border-[#DAD2C5] dark:border-[#4A3B2A] transition-all active:scale-95',
+                !answered && !isSelected && 'hover:border-[#0BC2D7] border-border bg-white dark:bg-card',
                 !answered && isSelected && 'border-[#0BC2D7] bg-[#0BC2D7]/10',
-                answered && isCorrect && 'border-[#579F10] bg-[#D8F2BF]',
-                answered && isSelected && !isCorrect && 'border-[#C61518] bg-[#FFDEDF]',
-                answered && !isSelected && !isCorrect && 'border-border bg-white opacity-60',
+                answered && isCorrect && 'border-[#579F10] bg-[#D8F2BF] dark:bg-[#1F3A0F]',
+                answered && isSelected && !isCorrect && 'border-[#C61518] bg-[#FFDEDF] dark:bg-[#3D1315]',
+                answered && !isSelected && !isCorrect && 'border-border bg-white dark:bg-card opacity-60',
               )}
             >
               {choice.imagePath ? (
@@ -87,7 +87,7 @@ export default function SignToPicture({ item, distractors, mode, initialAnswer, 
                   <Image src={choice.imagePath} alt={choice.label} fill className="object-contain" />
                 </div>
               ) : (
-                <div className="flex h-20 w-full items-center justify-center text-3xl font-black text-indigo-600">
+                <div className="flex h-20 w-full items-center justify-center text-3xl font-black text-indigo-600 dark:text-indigo-300">
                   {choice.label}
                 </div>
               )}
@@ -106,7 +106,7 @@ export default function SignToPicture({ item, distractors, mode, initialAnswer, 
       {answered && (
         <div className={cn(
           'rounded-2xl p-4 text-center',
-          correct ? 'bg-[#D8F2BF] text-[#579F10]' : 'bg-[#FFDEDF] text-[#C61518]',
+          correct ? 'bg-[#D8F2BF] dark:bg-[#1F3A0F] text-[#579F10] dark:text-[#8FD65C]' : 'bg-[#FFDEDF] dark:bg-[#3D1315] text-[#C61518] dark:text-[#FF6B70]',
         )}>
           <p className="font-bold text-xl">{correct ? '🎉 Correct!' : '❌ Not quite'}</p>
           {!correct && <p className="text-sm mt-1">The correct answer is <strong>{item.label}</strong></p>}

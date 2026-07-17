@@ -35,6 +35,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `try{var f=localStorage.getItem('fontSize');if(f)document.documentElement.setAttribute('data-font-size',f);}catch(e){}`,
           }}
         />
+        {/* Runs before hydration so a saved dark-theme preference applies
+            immediately instead of flashing light mode first. Light is the
+            fixed default — the OS color scheme is intentionally ignored. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');}catch(e){}`,
+          }}
+        />
       </head>
       <body className="min-h-full bg-background font-sans antialiased">
         {children}

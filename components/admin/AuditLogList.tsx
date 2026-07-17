@@ -80,10 +80,10 @@ export default function AuditLogList({ logs }: { logs: AuditLog[] }) {
         {filtered.map((log) => (
           <div
             key={log.id}
-            className="flex items-start justify-between gap-3 rounded-xl border bg-white p-3.5 shadow-sm"
+            className="flex items-start justify-between gap-3 rounded-xl border bg-white dark:bg-card p-3.5 shadow-sm"
           >
             <div className="flex items-start gap-3 min-w-0">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-600">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-950 text-sm font-bold text-indigo-600 dark:text-indigo-300">
                 {log.actor_name[0]?.toUpperCase() ?? '?'}
               </div>
               <div className="min-w-0">

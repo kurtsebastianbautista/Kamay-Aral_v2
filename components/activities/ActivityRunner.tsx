@@ -239,7 +239,7 @@ export default function ActivityRunner({ module: mod, submodule, mode, attemptId
           <div className="w-full max-w-md text-left">
             <button
               onClick={() => setShowReview((s) => !s)}
-              className="flex w-full items-center justify-center gap-1.5 text-sm font-semibold text-[#007B89]"
+              className="flex w-full items-center justify-center gap-1.5 text-sm font-semibold text-[#007B89] dark:text-[#4DD8E8]"
             >
               Review Answers
               <ChevronDown className={cn('h-4 w-4 transition-transform', showReview && 'rotate-180')} />
@@ -249,7 +249,7 @@ export default function ActivityRunner({ module: mod, submodule, mode, attemptId
                 {answers.map((a, idx) => {
                   const item = itemById.get(a.item_id)
                   return (
-                    <div key={idx} className="flex items-center justify-between gap-3 rounded-xl border bg-white p-3 shadow-sm">
+                    <div key={idx} className="flex items-center justify-between gap-3 rounded-xl border bg-white dark:bg-card p-3 shadow-sm">
                       <div className="flex items-center gap-2.5 min-w-0">
                         {a.is_correct ? (
                           <CheckCircle2 className="h-5 w-5 shrink-0 text-[#579F10]" />
@@ -359,7 +359,7 @@ export default function ActivityRunner({ module: mod, submodule, mode, attemptId
         <button
           onClick={goPrevious}
           disabled={stepIndex === 0}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-white border border-[#DAD2C5] shadow-[0_4px_0_#DAD2C5] py-3 text-lg font-semibold disabled:opacity-40 hover:bg-muted transition-colors"
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-white dark:bg-card border border-[#DAD2C5] dark:border-[#4A3B2A] shadow-[0_4px_0_#DAD2C5] dark:shadow-[0_4px_0_#4A3B2A] py-3 text-lg font-semibold disabled:opacity-40 hover:bg-muted transition-colors"
         >
           <ChevronLeft className="h-6 w-6" />
           Previous

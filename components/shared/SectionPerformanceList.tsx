@@ -115,7 +115,7 @@ export default function SectionPerformanceList({ students, attempts, enabledSubm
             <span>Average: <strong className="text-foreground">{sectionAvg}%</strong></span>
           )}
           {needsAttentionCount > 0 && (
-            <span className="flex items-center gap-1 text-red-600 font-medium">
+            <span className="flex items-center gap-1 text-red-600 dark:text-red-400 font-medium">
               <AlertTriangle className="h-3.5 w-3.5" /> {needsAttentionCount} need attention
             </span>
           )}
@@ -134,13 +134,13 @@ export default function SectionPerformanceList({ students, attempts, enabledSubm
           <Link
             key={student.id}
             href={student.href}
-            className="flex items-center justify-between rounded-xl border bg-white p-3 shadow-sm hover:shadow-md transition-shadow"
+            className="flex items-center justify-between rounded-xl border bg-white dark:bg-card p-3 shadow-sm hover:shadow-md transition-shadow"
           >
             <div className="flex items-center gap-3">
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
                 {idx + 1}
               </span>
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-600">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-950 text-sm font-bold text-indigo-600 dark:text-indigo-300">
                 {student.full_name[0]?.toUpperCase()}
               </div>
               <div>
@@ -150,9 +150,9 @@ export default function SectionPerformanceList({ students, attempts, enabledSubm
             </div>
             {student.avg !== null ? (
               <span className="flex items-center gap-1">
-                {student.trend === 'up' && <TrendingUp className="h-3.5 w-3.5 text-emerald-600" />}
-                {student.trend === 'down' && <TrendingDown className="h-3.5 w-3.5 text-red-600" />}
-                <span className={`text-sm font-bold ${student.avg >= 80 ? 'text-emerald-600' : student.avg >= 50 ? 'text-amber-600' : 'text-red-600'}`}>
+                {student.trend === 'up' && <TrendingUp className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />}
+                {student.trend === 'down' && <TrendingDown className="h-3.5 w-3.5 text-red-600 dark:text-red-400" />}
+                <span className={`text-sm font-bold ${student.avg >= 80 ? 'text-emerald-600 dark:text-emerald-400' : student.avg >= 50 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
                   {student.avg}% avg
                 </span>
               </span>

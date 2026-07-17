@@ -50,17 +50,17 @@ export default function SectionDetailView({ sectionId, sectionName, students, at
           {students.map((student) => (
             <div
               key={student.id}
-              className="flex items-center justify-between rounded-xl border bg-white p-3 shadow-sm"
+              className="flex items-center justify-between rounded-xl border bg-white dark:bg-card p-3 shadow-sm"
             >
               <Link href={studentHref(student.id)} className="flex items-center gap-3 flex-1">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-600">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-950 text-sm font-bold text-indigo-600 dark:text-indigo-300">
                   {student.full_name[0]?.toUpperCase()}
                 </div>
                 <p className="font-medium">{student.full_name}</p>
               </Link>
               <div className="flex items-center gap-2">
                 {student.avg !== null && (
-                  <span className={`text-sm font-bold ${student.avg >= 80 ? 'text-emerald-600' : student.avg >= 50 ? 'text-amber-600' : 'text-red-600'}`}>
+                  <span className={`text-sm font-bold ${student.avg >= 80 ? 'text-emerald-600 dark:text-emerald-400' : student.avg >= 50 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
                     {student.avg}% avg
                   </span>
                 )}
@@ -87,7 +87,7 @@ export default function SectionDetailView({ sectionId, sectionName, students, at
             content: (
               <>
                 {mod.subModules.map((sm) => (
-                  <div key={sm.id} className="flex items-center justify-between rounded-xl border bg-white px-4 py-3 shadow-sm">
+                  <div key={sm.id} className="flex items-center justify-between rounded-xl border bg-white dark:bg-card px-4 py-3 shadow-sm">
                     <p className="font-medium text-sm">{sm.title}</p>
                     <QuizToggle
                       sectionId={sectionId}

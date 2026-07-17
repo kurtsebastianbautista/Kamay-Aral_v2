@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import LogoutButton from '@/components/shared/LogoutButton'
 import FontSizeControl from '@/components/shared/FontSizeControl'
+import ThemeToggle from '@/components/shared/ThemeToggle'
+import SettingSwitch from '@/components/shared/SettingSwitch'
 
 export default async function ProfilePage() {
   const supabase = await createClient()
@@ -34,11 +36,11 @@ export default async function ProfilePage() {
   return (
     <div className="px-4 pt-8 pb-4 space-y-6">
       <div className="flex items-center gap-4">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100 text-2xl font-bold text-indigo-600">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-950 text-2xl font-bold text-indigo-600 dark:text-indigo-300">
           {student?.full_name?.[0]?.toUpperCase() ?? '?'}
         </div>
         <div>
-          <h1 className="text-2xl text-[#694B26] font-black">{student?.full_name}</h1>
+          <h1 className="text-2xl text-foreground font-black">{student?.full_name}</h1>
           <p className="text-sm text-muted-foreground">{user?.email}</p>
         </div>
       </div>
@@ -47,7 +49,7 @@ export default async function ProfilePage() {
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
           Class
         </h2>
-        <div className="rounded-xl border bg-white p-4 shadow-sm space-y-1">
+        <div className="rounded-xl border bg-white dark:bg-card p-4 shadow-sm space-y-1">
           {sectionName ? (
             <>
               <p className="text-sm"><span className="text-muted-foreground">Section:</span> <span className="font-medium">{sectionName}</span></p>
@@ -63,8 +65,19 @@ export default async function ProfilePage() {
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
           Settings
         </h2>
-        <div className="rounded-xl border bg-white p-4 shadow-sm">
+        <div className="rounded-xl border bg-white dark:bg-card p-4 shadow-sm space-y-5">
           <FontSizeControl />
+          <ThemeToggle />
+          <SettingSwitch
+            label="Auto-Repeat Videos"
+            description="Replay a learning video automatically when it ends"
+            storageKey="autoRepeatVideo"
+          />
+          <SettingSwitch
+            label="Manual Video Playback"
+            description="Require pressing play instead of starting videos automatically"
+            storageKey="manualVideoPlayback"
+          />
         </div>
       </div>
 
